@@ -46,7 +46,7 @@ class ParkingFeeCalculator {
      * @returns {number} The time difference in hours rounded up.
      */
     static getTimeDifference(timeIn, timeOut) {
-        return Math.ceil(Math.abs((new Date(timeOut) - new Date(timeIn)) / (1000 * 60 * 60)));
+        return Math.ceil((new Date(timeOut) - new Date(timeIn)) / (1000 * 60 * 60));
     }
 }
 

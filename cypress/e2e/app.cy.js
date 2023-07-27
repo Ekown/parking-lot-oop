@@ -1360,6 +1360,66 @@ describe('Final step: Control Panel', () => {
       .should('have.value', '2023-07-21T13:28');
   });
 
+  it('should not set a vehicle as returning if it has the same license and returned within 1 hour in the past', () => {
+    // Park 1st vehicle
+    getTableCell(0, 0).click();
+
+    cy.get('[data-cy="park-vehicle-form"]')
+      .find('[data-cy="license-plate-field"]')
+      .type('AAA1111');
+
+    cy.get('[data-cy="park-vehicle-form"]')
+      .find('[data-cy="vehicle-size-field"]')
+      .select('S');
+
+    cy.get('[data-cy="park-vehicle-form"]')
+      .find('[data-cy="time-in-field"]')
+      .type('2023-07-21T13:28');
+
+    cy.get('[data-cy="park-button"]').click();
+
+    cy.get('.custom-toast:visible:last-of-type', { timeout: 10000 }).should('have.length', 1).contains('AAA-1111');
+
+    // Unpark vehicle
+    getTableCell(0, 1).should('have.text', 'AAA-1111').click();
+
+    cy.get('[data-cy="park-vehicle-form"]').should('be.visible');
+    cy.get('[data-cy="park-vehicle-form"]').find('[data-cy="time-out-field"]')
+      .should('be.visible')
+      .type('2023-07-21T15:28')
+      .should('have.value', '2023-07-21T15:28');
+
+    cy.get('[data-cy="unpark-button"]').should('be.visible').should('not.be.disabled').click();
+
+    cy.get('[data-cy="parking-map"] table td:contains("AAA-1111")').should('have.length', 0);
+
+    // Park vehicle again
+    getTableCell(0, 0).click();
+
+    cy.get('[data-cy="park-vehicle-form"]')
+      .find('[data-cy="license-plate-field"]')
+      .type('AAA1111');
+
+    cy.get('[data-cy="park-vehicle-form"]')
+      .find('[data-cy="vehicle-size-field"]')
+      .select('S');
+
+    cy.get('[data-cy="park-vehicle-form"]')
+      .find('[data-cy="time-in-field"]')
+      .type('2023-07-21T14:28');
+
+    cy.get('[data-cy="park-button"]').click();
+
+    cy.get('.custom-toast:visible:last-of-type', { timeout: 10000 }).contains('AAA-1111');
+
+    // Check if the time in is set to the initial parking time in
+    getTableCell(0, 1).should('have.text', 'AAA-1111').click();
+
+    cy.get('[data-cy="park-vehicle-form"]')
+      .find('[data-cy="time-in-field"]')
+      .should('have.value', '2023-07-21T14:28');
+  });
+
   it('should set a different sized vehicle as returning if it has the same license and returned within 1 hour', () => {
     // Park 1st vehicle
     getTableCell(0, 0).click();

@@ -77,10 +77,6 @@ const ControlPanel = (props) => {
                 const returningVehicle = vehicleManager.getReturningVehicle(currentVehicle);
                 
                 incomingVehicle = {...incomingVehicle, timeIn: returningVehicle.timeIn, size: returningVehicle.size};
-
-                setUnparkedVehicles(unparkedVehicles.filter(unparkedVehicle =>
-                    !isEqual(unparkedVehicle.coordinates, returningVehicle.coordinates)
-                ));
             }
 
             const parkedVehicleCoordinates = parkingLot?.parkVehicle(selectedEntryPoint, incomingVehicle.size);
@@ -89,6 +85,9 @@ const ControlPanel = (props) => {
                 toast.success(`Vehicle ${incomingVehicle.license} parked at row ${parkedVehicleCoordinates.rowIndex + 1} column ${parkedVehicleCoordinates.columnIndex + 1}.`);
 
                 setVehicles([...vehicles, { ...incomingVehicle, coordinates: parkedVehicleCoordinates }]);
+                setUnparkedVehicles(unparkedVehicles.filter(unparkedVehicle =>
+                    !isEqual(unparkedVehicle.license, incomingVehicle.license)
+                ));
             } else {
                 toast.error('Sorry, no available parking slot for your vehicle.');
             }

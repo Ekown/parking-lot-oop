@@ -83,7 +83,7 @@ class VehicleManager {
         return this._unparkedVehicles.filter((unParkedVehicle) => {
             return (
                 unParkedVehicle.license === vehicle.license &&
-                ParkingFeeCalculator.getTimeDifference(vehicle.timeIn, unParkedVehicle.timeOut) === 1
+                ParkingFeeCalculator.getTimeDifference(vehicle.timeIn, unParkedVehicle.timeOut) === -1
             );
         })[0];
     }
